@@ -7,9 +7,13 @@ ID_KLDI = "D212"
 PAGE_SIZE = 10000
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0",
-    "X-Requested-With": "XMLHttpRequest",
-    "Referer": "https://sirup.inaproc.id/"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36",
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "Accept-Language": "en-US,en;q=0.9,id;q=0.8",
+    "Referer": "https://sirup.lkpp.go.id/",
+    "Origin": "https://sirup.lkpp.go.id",
+    "Connection": "keep-alive",
+    "X-Requested-With": "XMLHttpRequest"
 }
 
 ENDPOINTS = {
@@ -70,7 +74,13 @@ def crawl(endpoint, label, tahun):
 
         url = f"{BASE_URL}/{endpoint}"
 
-        r = requests.get(url, headers=HEADERS, params=params)
+        session = requests.Session()
+        session.headers.update(HEADERS)
+        
+        r = session.get(url, params=params, timeout=60)
+        
+        if r.status_code != 200:
+            print("Stop crawl:", r.status_code)
 
         if r.status_code == 404:
             print("⚠️ Endpoint tidak tersedia")
